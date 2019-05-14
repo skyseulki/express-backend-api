@@ -28,8 +28,24 @@ router.put('/', (req, res) => {
   return res.json({data: 'Received a PUT HTTP method user'});
 });
 
-router.delete('/', (req, res) => {
-  return res.json({data: 'Received a DELETE HTTP method user'});
+router.delete('/:id/restaurants/:restId', async (req, res) => {
+  const foundUser = await User.findById(req.params.id);
+  foundUser.restaurants = foundUser.restaurants.filter(r => {
+    return r.id != req.params.restId;
+  });
+  await foundUser.save();
+  res.json({ user: foundUser })
+  // try {
+  //   const removeRestaurant = await restaurantId.findByIdAndRemove(req.params.id)
+  //   const foundUser = await User.findOne({
+  //     restaurant: req.params.id
+  //   })
+  //   await foundUser.restaurants.remove(req.params.id)
+  //   await foundUser.save();
+  //   res.redirect('/users/:id')
+  // } catch(err){
+  //   res.json(err)
+  // }
 });
 
 router.post('/login', async(req, res) => {
